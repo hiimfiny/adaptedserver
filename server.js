@@ -22,8 +22,8 @@ app.listen(PORT,() => console.log('Server Started'))
 app.get("/", async (req, res) => {
   const snapshot = await User.get();
   const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  res.send("a")
-  //res.sendFile('index.html', { root: __dirname });
+  //res.send("a")
+  res.sendFile('index.html', { root: __dirname });
 });
 
 app.post("/create", async (req, res) => {
