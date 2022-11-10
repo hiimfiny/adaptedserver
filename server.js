@@ -11,13 +11,13 @@ const Game1 = db.collection("Game1")
 const auth = firebaseApp.auth()
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-const PORT = 3333
+var PORT = process.env.PORT || 3333;
 const address = "adapted.herokuapp.com"
 const app = express();
 app.use(json());
 app.use(cors());
 
-app.listen(PORT, address,() => console.log('Server Started'))
+app.listen(PORT,() => console.log('Server Started'))
 
 app.get("/", async (req, res) => {
   const snapshot = await User.get();
