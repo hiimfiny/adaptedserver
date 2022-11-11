@@ -3,27 +3,34 @@ import cors from "cors";
 import firebaseApp from "./config.js";
 import path from 'path';
 import {fileURLToPath} from 'url';
+import { stringify } from "querystring";
 
 const db = firebaseApp.firestore()
 const User = db.collection("Users")
-const Game1 = db.collection("Game1")
+const Game1 = {collection: db.collection("Game1"), name:"game1"}
+const Game2 = db.collection("Game2")
 
 const auth = firebaseApp.auth()
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 var PORT = process.env.PORT || 3333;
-const address = "adapted.herokuapp.com"
+
 const app = express();
 app.use(json());
 app.use(cors());
 
-app.listen(PORT,() => console.log('Server Started'))
+app.listen(PORT,() => {
+  console.log('Server Started')
+  postData(Game1,{ name: 'Test2', time: '40', point: '132' })
+})
 
 app.get("/", async (req, res) => {
   const snapshot = await User.get();
   const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   //res.send("a")
+  
   res.sendFile('index.html', { root: __dirname });
+  
 });
 
 app.post("/create", async (req, res) => {
@@ -49,12 +56,24 @@ EventFieldData
     val type: String,
     var eventId: Long = 0
 */
-app.post("/game1/create", async (req, res) => {
+app.post("/game2/create", async (req, res) => {
   const data = req.body;
-  console.log(req.body.point)
-  await Game1.add({ data });
+  console.log(req.body)
+  await Game2.add({ data });
   res.send({ msg: "Game Data added" });
 });
+
+function postData(collection,entity){
+  console.log(`/${collection.name}/create`)
+  collection.collection.add({ entity });
+  app.post(`/game1/create`, async(req,res)=>{
+    
+    //const data = req.body;
+    console.log(req.body.point)
+    await 
+    res.send({ msg: "Game Data added" });
+  })
+}
 
 app.post("/update", async (req, res) => {
   const id = req.body.id;
