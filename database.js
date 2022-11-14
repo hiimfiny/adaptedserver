@@ -24,10 +24,13 @@ EventFieldData
 */
 import axios from 'axios'
 import firebaseApp from "./config.js";
+
 const auth = firebaseApp.auth()
 const db = firebaseApp.firestore()
-const PORT = process.env.PORT || 3333;
+const PORT = process.env.PORT || 4444;
 const ADDRESS = process.env.ADDRESS || 'http://localhost' 
+
+
 async function filterUser(email){
     const snapshot = await db.collection("Users").get()
     const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
@@ -37,7 +40,6 @@ async function filterUser(email){
   }
   
 async function postData(collection,entity){
-  console.log(ADDRESS, PORT)
 try{
     //const response = await axios.post(`http://localhost:3333/${collection.name}/create`, entity)
     const response = await axios.post(`${ADDRESS}:${PORT}/${collection.name}/create`, entity)
