@@ -15,13 +15,14 @@ const auth = firebaseApp.auth()
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 3333;
-
+const ADDRESS = process.env.ADDRESS || 'http://localhost' 
 const app = express();
 app.use(json());
 app.use(cors());
 
 app.listen(PORT,() => {
   console.log('Server Started')
+  dbfun.postData(Game1,{name: "Test5", point:"123", time:"23"})
 })
 
 app.get("/", async (req, res) => {
