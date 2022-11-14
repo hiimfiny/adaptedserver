@@ -41,8 +41,8 @@ async function filterUser(email){
   
 async function postData(collection,entity){
 try{
-    //const response = await axios.post(`http://localhost:3333/${collection.name}/create`, entity)
-    const response = await axios.post(`${ADDRESS}:${PORT}/${collection.name}/create`, entity)
+    const response = await axios.post(`http://localhost:3333/${collection.name}/create`, entity)
+    //const response = await axios.post(`https://adapted.herokuapp.com/${collection.name}/create`, entity)
     }catch(error){console.log(error)}
 }
 
