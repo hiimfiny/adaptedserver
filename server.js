@@ -3,7 +3,7 @@ import cors from "cors";
 import firebaseApp from "./config.js";
 import path from 'path';
 import {fileURLToPath} from 'url';
-import { stringify } from "querystring";
+
 
 const db = firebaseApp.firestore()
 const User = db.collection("Users")
@@ -13,7 +13,7 @@ const Game2 = db.collection("Game2")
 const auth = firebaseApp.auth()
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
-var PORT = process.env.PORT || 3333;
+const PORT = process.env.PORT || 3333;
 
 const app = express();
 app.use(json());
@@ -21,14 +21,12 @@ app.use(cors());
 
 app.listen(PORT,() => {
   console.log('Server Started')
-  postData(Game1,{ name: 'Test2', time: '40', point: '132' })
+  filterUser()
 })
 
 app.get("/", async (req, res) => {
   const snapshot = await User.get();
   const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  //res.send("a")
-  
   res.sendFile('index.html', { root: __dirname });
   
 });
@@ -39,6 +37,12 @@ app.post("/create", async (req, res) => {
   res.send({ msg: "User Added" });
 });
 /*
+User{
+  name
+  email
+  teacher(?)
+}
+
 EventDataModel
 @PrimaryKey(autoGenerate = true)
     val id: Long = 0,
@@ -62,6 +66,21 @@ app.post("/game2/create", async (req, res) => {
   await Game2.add({ data });
   res.send({ msg: "Game Data added" });
 });
+
+function formatUserData(data){
+  var returnData = {
+    email: data.email,
+    name: data.name,
+    password: data.password,
+    teacher: data.teacher
+  }
+  return returnData
+}
+async function filterUser(){
+  const snapshot = await User.get();
+  const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  console.log(list)
+}
 
 function postData(collection,entity){
   console.log(`/${collection.name}/create`)
@@ -91,14 +110,17 @@ app.post("/delete", async (req, res) => {
 
 
 app.post("/register", async (req, res) => {
-  const data = req.body;
-  await createUser(data.email, data.pw)
+  console.log(req.body)
+  const data = formatUserData(req.body);
+  console.log(data)
+  User.add({data})
+  await createUser(data.email, data.password)
   res.send({ msg: "User Registered" });
 });
 
 app.post("/login", async (req, res) => {
   const data = req.body;
-  await login(data.email, data.pw)
+  await login(data.email, data.password)
   res.send({ msg: "User Logged in" });
 });
 
@@ -116,7 +138,7 @@ function createUser(email, pw){
 function login(email, pw){
   auth.signInWithEmailAndPassword(email, pw)
   .then((userCredential) => {
-    var user = userCredential.user;
+    const user = userCredential.user;
     console.log("logged in, ", user.email)
   })
   .catch((error) => {
