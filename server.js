@@ -1,4 +1,4 @@
-import express, { json } from "express";
+import express, { json, response } from "express";
 import cors from "cors";
 import firebaseApp from "./config.js";
 import path from 'path';
@@ -10,6 +10,7 @@ const User = db.collection("Users")
 const Game1 = {collection: db.collection("Game1"), name:"game1"}
 const Game2 = db.collection("Game2")
 
+import axios from 'axios'
 const auth = firebaseApp.auth()
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -21,12 +22,18 @@ app.use(cors());
 
 app.listen(PORT,() => {
   console.log('Server Started')
-  filterUser()
+  postData(Game1,{
+    "name": "Test4",
+    "time":"45",
+    "point":"151"
+})
+  
 })
 
 app.get("/", async (req, res) => {
   const snapshot = await User.get();
   const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  
   res.sendFile('index.html', { root: __dirname });
   
 });
@@ -60,10 +67,10 @@ EventFieldData
     val type: String,
     var eventId: Long = 0
 */
-app.post("/game2/create", async (req, res) => {
+app.post("/game1/create", async (req, res) => {
   const data = req.body;
   console.log(req.body)
-  await Game2.add({ data });
+  await Game1.collection.add({ data });
   res.send({ msg: "Game Data added" });
 });
 
@@ -79,19 +86,19 @@ function formatUserData(data){
 async function filterUser(){
   const snapshot = await User.get();
   const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  console.log(list)
 }
 
-function postData(collection,entity){
-  console.log(`/${collection.name}/create`)
-  collection.collection.add({ entity });
-  app.post(`/game1/create`, async(req,res)=>{
-    
-    //const data = req.body;
-    console.log(req.body.point)
-    await 
-    res.send({ msg: "Game Data added" });
-  })
+async function postData(collection,entity){
+  console.log(`localhost:${PORT}/${collection.name}/create`)
+  console.log(entity)
+  console.log(JSON.stringify(entity))
+  //fetch(`http://localhost:3333/${collection.name}/create`)
+  
+  try{
+    const response = await axios.post(`http://localhost:3333/${collection.name}/create`, entity)
+  } catch(error){console.log(error)}
+  
+  
 }
 
 app.post("/update", async (req, res) => {
