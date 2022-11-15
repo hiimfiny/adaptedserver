@@ -31,19 +31,29 @@ const PORT = process.env.PORT || 4444;
 const ADDRESS = process.env.ADDRESS || 'http://localhost' 
 
 
-async function filterUser(email){
-    const snapshot = await db.collection("Users").get()
-    const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
 
-    const userl = list.filter(user => user.data.email === email)
-    return userl[0].data.teacher
-  }
   
-async function postData(collection,entity){
-try{
-    const response = await axios.post(`http://localhost:3333/${collection.name}/create`, entity)
-    //const response = await axios.post(`https://adapted.herokuapp.com/${collection.name}/create`, entity)
-    }catch(error){console.log(error)}
+async function handleGameData(data){
+    var notMissing = (data.collection!=undefined && data.name!=undefined 
+                    && data.value!=undefined && data.type != undefined)
+    if(notMissing){
+        const collection = data.collection
+        const gameData = {name: data.name, value: data.value, type: data.type }
+        await db.collection(collection).add(gameData)
+    }
+    return notMissing
+}
+
+async function handleUserRegister(data){
+    var notMissing = (data.email != undefined && data.name != undefined 
+                    && data.teacher != undefined && data.password != undefined)
+    if(notMissing){
+        const user = {email: data.email, name: data.name, teacher: data.teacher}
+        const pw = data.password
+        createUser(user.email, pw)
+        await db.collection("Users").add(user)
+    }
+    return notMissing
 }
 
 function createUser(email, pw){
@@ -52,12 +62,18 @@ function createUser(email, pw){
         const user = userCredential.user;
         console.log("user registered, ",user.email)
     })
-      .catch((error) => {
-      console.log(error)
-    });
-  }
+    .catch((error) => {console.log(error)})
+}
+
+async function handleUserLogin(data){
+    var notMissing = (data.email != undefined && data.password != undefined)
+    if(notMissing){
+        login(data.email, data.password)
+    }
+    return notMissing
+}
   
-  async function login(email, pw){
+async function login(email, pw){
     auth.signInWithEmailAndPassword(email, pw)
     .then((userCredential) => {
       const user = userCredential.user
@@ -69,6 +85,15 @@ function createUser(email, pw){
 
     var teach = await filterUser(email)
     console.log(teach ? 'teacher' : 'not teacher')
-  }
+}
 
-  export {postData, createUser, login}
+async function filterUser(email){
+    const snapshot = await db.collection("Users").get()
+    const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
+    console.log(list)
+    const userl = list.filter(user => user.email === email)
+    return userl[0].teacher
+}
+
+
+export {handleGameData, handleUserRegister, handleUserLogin}

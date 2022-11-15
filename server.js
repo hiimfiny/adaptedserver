@@ -40,23 +40,12 @@ app.post("/create", async (req, res) => {
   res.send({ msg: "User Added" });
 });
 
-app.post("/game1/create", async (req, res) => {
-  const data = req.body;
-  console.log(req.body)
-  await Game1.collection.add({ data });
-  res.send({ msg: "Game Data added" });
+app.post("/addgamedata", async (req, res) => {
+  const data = req.body
+  var success = await dbfun.handleGameData(data)
+  console.log(success)
+  res.send({ msg: (success) ? "Game Data added" : "Missing Data" })
 });
-
-function formatUserData(data){
-  var returnData = {
-    email: data.email,
-    name: data.name,
-    password: data.password,
-    teacher: data.teacher
-  }
-  return returnData
-}
-
 
 app.post("/update", async (req, res) => {
   const id = req.body.id;
@@ -74,17 +63,15 @@ app.post("/delete", async (req, res) => {
 
 
 app.post("/register", async (req, res) => {
-  console.log(req.body)
-  const data = formatUserData(req.body);
-  console.log(data)
-  User.add({data})
-  await dbfun.createUser(data.email, data.password)
-  res.send({ msg: "User Registered" });
+  const data = req.body
+  var success = await dbfun.handleUserRegister(data)
+  console.log(success)
+  res.send({ msg: (success) ? "User registered" : "Missing Data" })
 });
 
 app.post("/login", async (req, res) => {
   const data = req.body;
-  await dbfun.login(data.email, data.password)
-  res.send({ msg: "User Logged in" });
+  var success = await dbfun.handleUserLogin(data)
+  res.send({ msg: (success) ? "User logged in" : "Missing Data" })
 });
 
