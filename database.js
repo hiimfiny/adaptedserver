@@ -50,23 +50,20 @@ async function handleUserRegister(data){
     if(notMissing){
         const user = {email: data.email, name: data.name, teacher: data.teacher}
         const pw = data.password
-        if(createUser(user.email, pw))
-            await db.collection("Users").add(user)
+        if(await createUser(user.email, pw)) await db.collection("Users").add(user)
     }
     return notMissing
 }
 
-function createUser(email, pw){
-    var success = false
-
-    auth.createUserWithEmailAndPassword(email, pw)
+async function createUser(email, pw){
+    var success = true
+    await auth.createUserWithEmailAndPassword(email, pw)
     .then((userCredential) => {
         const user = userCredential.user;
         console.log("user registered, ",user.email)
-        success = true
     })
     .catch((error) => {
-        
+        success = false 
         var code = error.code
         switch(code){
             case "auth/email-already-in-use":
@@ -77,6 +74,7 @@ function createUser(email, pw){
                 console.log(error)
         }
     })
+    console.log(success)
     return success
 }
 
