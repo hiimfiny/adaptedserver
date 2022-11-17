@@ -22,7 +22,7 @@ EventFieldData
     val type: String,
     var eventId: Long = 0
 */
-import axios from 'axios'
+
 import firebaseApp from "./config.js";
 
 const auth = firebaseApp.auth()
@@ -50,19 +50,34 @@ async function handleUserRegister(data){
     if(notMissing){
         const user = {email: data.email, name: data.name, teacher: data.teacher}
         const pw = data.password
-        createUser(user.email, pw)
-        await db.collection("Users").add(user)
+        if(createUser(user.email, pw))
+            await db.collection("Users").add(user)
     }
     return notMissing
 }
 
 function createUser(email, pw){
+    var success = false
+
     auth.createUserWithEmailAndPassword(email, pw)
     .then((userCredential) => {
         const user = userCredential.user;
         console.log("user registered, ",user.email)
+        success = true
     })
-    .catch((error) => {console.log(error)})
+    .catch((error) => {
+        
+        var code = error.code
+        switch(code){
+            case "auth/email-already-in-use":
+                //alert("The email address is already in use!")
+                console.log("The email address is already in use!")
+                break;
+            default:
+                console.log(error)
+        }
+    })
+    return success
 }
 
 async function handleUserLogin(data){
@@ -80,19 +95,31 @@ async function login(email, pw){
       console.log("logged in, ", user.email)
     })
     .catch((error) => {
-      console.log(error)
+        var code = error.code
+        switch(code){
+            case "auth/wrong-password":
+                //alert("Wrong password!")
+                console.log("Wrong password!")
+                break;
+            case "auth/user-not-found":
+                //alert("Wrong email address!")
+                console.log("Wrong email address!")
+                break;
+            default:
+                console.log(error)
+        }
     });
-
     var teach = await filterUser(email)
-    console.log(teach ? 'teacher' : 'not teacher')
+      console.log(teach ? 'teacher' : 'not teacher')
+      
+    
 }
 
 async function filterUser(email){
     const snapshot = await db.collection("Users").get()
     const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }))
-    console.log(list)
     const userl = list.filter(user => user.email === email)
-    return userl[0].teacher
+    return (userl.length!=0 ? userl[0].teacher : false)
 }
 
 

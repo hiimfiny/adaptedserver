@@ -1,24 +1,25 @@
-import express, { json, response } from "express";
+import express from "express";
 import cors from "cors";
 import firebaseApp from "./config.js";
 import path from 'path';
 import {fileURLToPath} from 'url';
 import * as dbfun from "./database.js"
+import axios from 'axios'
 
 const db = firebaseApp.firestore()
 const User = db.collection("Users")
 const Game1 = {collection: db.collection("Game1"), name:"game1"}
 const Game2 = db.collection("Game2")
 
-
-const auth = firebaseApp.auth()
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 3333;
 const ADDRESS = process.env.ADDRESS || 'http://localhost' 
 const app = express();
-app.use(json());
+app.use(express.json());
 app.use(cors());
+app.use(express.static(__dirname))
+
 
 app.listen(PORT,() => {
   console.log('Server Started')
@@ -65,7 +66,6 @@ app.post("/delete", async (req, res) => {
 app.post("/register", async (req, res) => {
   const data = req.body
   var success = await dbfun.handleUserRegister(data)
-  console.log(success)
   res.send({ msg: (success) ? "User registered" : "Missing Data" })
 });
 
@@ -74,4 +74,17 @@ app.post("/login", async (req, res) => {
   var success = await dbfun.handleUserLogin(data)
   res.send({ msg: (success) ? "User logged in" : "Missing Data" })
 });
+//name, email, password
+function registerButton(){
+  
+  axios.post('/register',{
+    name:document.getElementById("name").value,
+    email:document.getElementById("email").value,
+    password:document.getElementById("psw").value,
+    teacher: false
+  })
+  
+ console.log('aaa')
+}
+export {registerButton}
 

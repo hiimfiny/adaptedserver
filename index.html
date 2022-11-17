@@ -6,27 +6,31 @@
     <title>Page Title</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href='style.css'>
-    <script src='server.js'></script>
+    <script type="importmap">
+        {"imports":{
+            "axios": "https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
+        }}
+    </script>
+    <script type="module" src='mod.js'></script>
 </head>
 <body>
     <form>
         <div class="container">
             <h1>Register</h1>
-            <p>Please fill in this form to create an account.</p>
-            <hr>
     
+            <label><b>Name</b></label>
+            <input type="text" placeholder="Enter Name" name="name" id="name" required>
             <label for="email"><b>Email</b></label>
             <input type="text" placeholder="Enter Email" name="email" id="email" required>
     
             <label><b>Password</b></label>
             <input type="password" placeholder="Password" name="psw" id="psw" required>
     
-            <button type="button" id="submitData" name="submitData" class="registerbtn">Register</button>
+            <button onclick="a()" type="button" id="submitData" name="submitData" class="registerbtn">Register</button>
         </div>
     
-        <div class="container signin">
-            <p>Already have an account? <a href="#">Sign in</a>.</p>
-        </div>
     </form>
+
+    
 </body>
 </html>
