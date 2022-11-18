@@ -24,6 +24,7 @@ app.use(express.static(__dirname))
 app.listen(PORT,() => {
   console.log('Server Started')
   console.log(ADDRESS, PORT)
+  
   //dbfun.postData(Game1,{name: "Test5", point:"123", time:"23"})
 })
 
@@ -86,5 +87,6 @@ function registerButton(){
   
  console.log('aaa')
 }
+
 export {registerButton}
 
