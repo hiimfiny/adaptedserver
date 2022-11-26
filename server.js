@@ -42,11 +42,11 @@ app.post("/create", async (req, res) => {
   res.send({ msg: "User Added" });
 });
 
-app.post("/addgamedata", async (req, res) => {
+app.post("/addeventdata", async (req, res) => {
   const data = req.body
-  var success = await dbfun.handleGameData(data)
+  var success = await dbfun.handleEventData(data)
   console.log(success)
-  res.send({ msg: (success) ? "Game Data added" : "Missing Data" })
+  res.send({ msg: (success) ? "Data added" : "Missing Data" })
 });
 
 app.post("/update", async (req, res) => {
@@ -75,18 +75,4 @@ app.post("/login", async (req, res) => {
   var success = await dbfun.handleUserLogin(data)
   res.send({ msg: (success) ? "User logged in" : "Missing Data" })
 });
-//name, email, password
-function registerButton(){
-  
-  axios.post('/register',{
-    name:document.getElementById("name").value,
-    email:document.getElementById("email").value,
-    password:document.getElementById("psw").value,
-    teacher: false
-  })
-  
- console.log('aaa')
-}
-
-export {registerButton}
 

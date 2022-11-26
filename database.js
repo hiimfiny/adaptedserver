@@ -1,28 +1,3 @@
-/*
-User{
-  name
-  email
-  teacher(?)
-}
-
-EventDataModel
-@PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
-    val name: String,
-    val timestamp: Long,
-    var gamePlayId: Long = 0,
-    @Ignore
-    var fields: List<EventFieldDataModel>
-
-EventFieldData
-@PrimaryKey(autoGenerate = true)
-    val id: Long = 0,
-    val name: String,
-    val value: String,
-    val type: String,
-    var eventId: Long = 0
-*/
-
 import firebaseApp from "./config.js";
 
 const auth = firebaseApp.auth()
@@ -31,19 +6,46 @@ const PORT = process.env.PORT || 4444;
 const ADDRESS = process.env.ADDRESS || 'http://localhost' 
 
 
+async function handleEventData(data){
+    var datatype = data.collection
+    if(datatype!=undefined)
+        switch(datatype){
+            case "EventData":
+                const eventData=formatEventData(data)
+                if(checkEventData(eventData)){
+                    await db.collection(datatype).add(eventData)
+                    return true
+                }
+            break
 
-  
-async function handleGameData(data){
-    var notMissing = (data.collection!=undefined && data.name!=undefined 
-                    && data.value!=undefined && data.type != undefined)
-    if(notMissing){
-        const collection = data.collection
-        const gameData = {name: data.name, value: data.value, type: data.type }
-        await db.collection(collection).add(gameData)
-    }
-    return notMissing
+            case "EventFieldData":
+                const eventFieldData=formatEventFieldData(data)
+                if(checkEventFieldData(eventFieldData)){
+                    await db.collection(datatype).add(eventFieldData)
+                    return true
+                } 
+            break
+        }
+    return false
 }
 
+function checkEventFieldData(eventFieldData){
+    return (eventFieldData.id!=undefined && eventFieldData.name!=undefined && eventFieldData.value!=undefined && eventFieldData.type!=undefined && eventFieldData.eventId!=undefined)
+}
+
+function checkEventData(eventData){
+    return (eventData.id!=undefined && eventData.name!=undefined && eventData.timestamp!=undefined && eventData.gamePlayId!=undefined)
+}
+
+function formatEventFieldData(data){
+    return {id: data.id, name: data.name, value: data.value, type: data.type, eventId: data.eventId}
+}
+function formatEventData(data){
+    var eventData = {id: data.id, name: data.name, timestamp: data.timestamp, gamePlayId: data.gamePlayId}
+    if(data.fields!=undefined)
+        eventData.fields = data.fields
+    return eventData
+}
 async function handleUserRegister(data){
     var notMissing = (data.email != undefined && data.name != undefined 
                     && data.teacher != undefined && data.password != undefined)
@@ -121,4 +123,4 @@ async function filterUser(email){
 }
 
 
-export {handleGameData, handleUserRegister, handleUserLogin}
+export {handleEventData, handleUserRegister, handleUserLogin}
