@@ -10,7 +10,7 @@ async function handleEventData(data){
     var datatype = data.collection
     if(datatype!=undefined)
         switch(datatype){
-            case "EventData":
+            case "eventData":
                 const eventData=formatEventData(data)
                 if(checkEventData(eventData)){
                     await db.collection(datatype).add(eventData)
@@ -18,7 +18,7 @@ async function handleEventData(data){
                 }
             break
 
-            case "EventFieldData":
+            case "eventFieldData":
                 const eventFieldData=formatEventFieldData(data)
                 if(checkEventFieldData(eventFieldData)){
                     await db.collection(datatype).add(eventFieldData)
@@ -110,7 +110,6 @@ async function login(email, pw){
         }
     });
     var teach = await filterUser(email)
-      console.log(teach ? 'teacher' : 'not teacher')
       
     
 }

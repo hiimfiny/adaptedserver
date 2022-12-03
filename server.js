@@ -8,8 +8,6 @@ import axios from 'axios'
 
 const db = firebaseApp.firestore()
 const User = db.collection("Users")
-const Game1 = {collection: db.collection("Game1"), name:"game1"}
-const Game2 = db.collection("Game2")
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -18,21 +16,20 @@ const ADDRESS = process.env.ADDRESS || 'http://localhost'
 const app = express();
 app.use(express.json());
 app.use(cors());
-app.use(express.static(__dirname))
+//app.use(express.static(__dirname))
 
 
 app.listen(PORT,() => {
   console.log('Server Started')
   console.log(ADDRESS, PORT)
   
-  //dbfun.postData(Game1,{name: "Test5", point:"123", time:"23"})
 })
 
 app.get("/", async (req, res) => {
-  const snapshot = await User.get();
+  const snapshot = await db.collection("eventData").get();
   const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  res.send(list)
   
-  res.sendFile('index.html', { root: __dirname });
   
 });
 
