@@ -1,16 +1,12 @@
 import express from "express";
 import cors from "cors";
 import firebaseApp from "./config.js";
-import path from 'path';
-import {fileURLToPath} from 'url';
 import * as dbfun from "./database.js"
-import axios from 'axios'
+
 
 const db = firebaseApp.firestore()
 const User = db.collection("Users")
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
 const PORT = process.env.PORT || 3333;
 const ADDRESS = process.env.ADDRESS || 'http://localhost' 
 const app = express();
@@ -32,6 +28,30 @@ app.get("/", async (req, res) => {
   
   
 });
+
+app.get("/search", async (req,res)=>{
+  const name = req.query.filterName
+  const snapshot = await db.collection("eventData").get();
+  const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+
+  var filtered = []
+  list.forEach(event => {
+    console.log(event.name)
+    if(event.name.match(name)){
+      filtered.push(event)
+    }
+  })
+  console.log(filtered)
+  res.send(filtered)
+})
+
+app.get("/fields", async (req, res)=>{
+  const id = req.query.id
+  const snapshot = await db.collection("eventFieldData").get()
+    const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) 
+    const fieldlist = list.filter(field => field.eventId == id)
+  res.send(fieldlist)
+})
 
 app.post("/create", async (req, res) => {
   const data = req.body;

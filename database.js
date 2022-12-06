@@ -121,5 +121,13 @@ async function filterUser(email){
     return (userl.length!=0 ? userl[0].teacher : false)
 }
 
+async function returnFields(id){
+    const snapshot = await db.collection("eventFieldData").get()
+    const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) 
+    const fieldlist = list.filter(field => field.eventId == id)
+    return fieldlist
+    
+}
 
-export {handleEventData, handleUserRegister, handleUserLogin}
+
+export {handleEventData, handleUserRegister, handleUserLogin, returnFields}

@@ -5,17 +5,33 @@ import EventData from './EventData'
 const TeacherPage = () => {
 
     const [eventDataList, setEventDataList] = useState([])
+    const [filterName, setFilterName] = useState('')
     const getList = () =>{
-        axios.get("http://localhost:3333/").then((response)=>{
+        axios.get("https://shy-pear-gecko-vest.cyclic.app/").then((response)=>{
             setEventDataList(response.data)
         })
     }
     useEffect(()=>{
         getList()
     }, [])
+
+    const formatDate = (timestamp)=>{
+        var date = new Date(timestamp)
+        return date.toUTCString()
+
+    }
+
+    const filterData = () => {
+        axios.get("http://localhost:3333/search", {params:{filterName: filterName}}).then((response)=>{
+            setEventDataList(response.data)
+        })
+    }
   return (
     <div>
         <h2>EventData</h2>
+            <label>Search:</label>
+            <input type='text' placeholder='' onChange={(e) => setFilterName(e.target.value)}/>
+            <button onClick={()=>{filterData()}}>Search</button>
         <table>
             <thead>
                 <th>gamePlayId</th>
@@ -30,8 +46,7 @@ const TeacherPage = () => {
                 gamePlayId={eventData.gamePlayId} 
                 id={eventData.id}
                 name={eventData.name}
-                timestamp={eventData.timestamp}
-                fields={eventData.fields}/>
+                timestamp={formatDate(eventData.timestamp)}/>
             </tbody>
         ))}
         </table>
