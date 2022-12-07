@@ -12,20 +12,23 @@ const Login = ({onLogin}) => {
     }
 
     return (
-        <form className='register' onSubmit={onSubmit}>
+        <div className='reg'>
+            <form className='register' onSubmit={onSubmit}>
             <div className='form-control'>
                 <label>E-mail</label>
-                <input type='text' placeholder='Enter username' 
+                <input type='text' placeholder='Enter e-mail' 
                 value={email} onChange={(e) => SetEmail(e.target.value)}/>
             </div>
             <div className='form-control'>
                 <label>Password</label>
-                <input type='text' placeholder='Enter password'
+                <input type='password' placeholder='Enter password'
                 value={pwd} onChange={(e) => SetPassword(e.target.value)}/>
             </div>
 
             <input className='registerbtn' type='submit' value='Login' />
         </form>
+        </div>
+        
     )
 }
 
