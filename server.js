@@ -45,8 +45,9 @@ app.get("/search", async (req,res)=>{
   res.send(filtered)
 })
 
-app.get("https://adaptedserver.cyclic.app/fields", async (req, res)=>{
+app.get("/fields", async (req, res)=>{
   const id = req.query.id
+  console.log(req.query)
   const snapshot = await db.collection("eventFieldData").get()
     const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) 
     const fieldlist = list.filter(field => field.eventId == id)
