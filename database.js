@@ -83,25 +83,27 @@ async function createUser(email, pw){
 async function handleUserLogin(data){
 
     if(data.email != (undefined || '') && data.password != (undefined || '')){
-        await login(data.email, data.password)
+        var s
+        setTimeout(async () => { s = await login(data.email, data.password)},3000)
+        console.log("login " + s)
         return true
         
     }
     
     
 }
-  
+
  async function login(email, pw){
-    var success=false
+    var success=true
     auth.signInWithEmailAndPassword(email, pw)
     .then((userCredential) => {
-        success = true
       const user = userCredential.user
       console.log("logged in, ", user.email)
-      return success
+      //return success
       
     })
     .catch((error) => {
+        success=false
         var code = error.code
         switch(code){
             case "auth/wrong-password":
@@ -113,11 +115,10 @@ async function handleUserLogin(data){
             default:
                 console.log(error)
         }
-    }).finally(()=>{
-        console.log("finally "+success)
-        return success
     })
     
+    
+    setTimeout(() => {console.log("end "+success);return success},2000)
     
 }
 
