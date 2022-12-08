@@ -90,7 +90,7 @@ app.post("/register", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   const data = req.body;
-  var success = await dbfun.handleUserLogin(data)
+  var success = dbfun.handleUserLogin(data)
   res.send({ msg: (success) ? "User logged in" : "Missing Data" })
 });
 

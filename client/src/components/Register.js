@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const Register = ( {onRegister} ) => {
+const Register = ( {onRegister, switchPage} ) => {
     const [email, SetEmail] = useState('')
     const [name, SetName] = useState('')
     const [pwd, SetPassword] = useState('')
@@ -40,6 +40,7 @@ const Register = ( {onRegister} ) => {
             </div>
 
             <input className='registerbtn' type='submit' value='Register' />
+            <a className='switch' onClick={switchPage}>Click here to log in</a>
         </form>
     )
 }

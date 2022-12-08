@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const Login = ({onLogin}) => {
+const Login = ({onLogin, switchPage}) => {
     const [email, SetEmail] = useState('')
     const [pwd, SetPassword] = useState('')
 
@@ -26,6 +26,7 @@ const Login = ({onLogin}) => {
             </div>
 
             <input className='registerbtn' type='submit' value='Login' />
+            <a className='switch' onClick={switchPage}>Click here to register</a>
         </form>
         </div>
         

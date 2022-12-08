@@ -80,37 +80,43 @@ async function createUser(email, pw){
     return success
 }
 
-async function handleUserLogin(data){
-    var notMissing = (data.email != undefined && data.password != undefined)
-    if(notMissing){
+function handleUserLogin(data){
+    if(data.email != (undefined || '') && data.password != (undefined || '')){
         login(data.email, data.password)
+        return true
+        
     }
-    return notMissing
+    
+    
 }
   
-async function login(email, pw){
+ function login(email, pw){
+    var success=false
     auth.signInWithEmailAndPassword(email, pw)
     .then((userCredential) => {
+        success = true
       const user = userCredential.user
       console.log("logged in, ", user.email)
+      return success
+      
     })
     .catch((error) => {
         var code = error.code
         switch(code){
             case "auth/wrong-password":
-                //alert("Wrong password!")
                 console.log("Wrong password!")
                 break;
             case "auth/user-not-found":
-                //alert("Wrong email address!")
                 console.log("Wrong email address!")
                 break;
             default:
                 console.log(error)
         }
-    });
-    var teach = await filterUser(email)
-      
+    }).finally(()=>{
+        console.log("finally "+success)
+        return success
+    })
+    
     
 }
 
