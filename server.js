@@ -47,7 +47,6 @@ app.get("/search", async (req,res)=>{
 
 app.get("/fields", async (req, res)=>{
   const id = req.query.id
-  console.log(req.query)
   const snapshot = await db.collection("eventFieldData").get()
     const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) 
     const fieldlist = list.filter(field => field.eventId == id)
@@ -90,7 +89,7 @@ app.post("/register", async (req, res) => {
 
 app.post("/login", async (req, res) => {
   const data = req.body;
-  var success = dbfun.handleUserLogin(data)
+  var success = await dbfun.handleUserLogin(data)
   res.send({ msg: (success) ? "User logged in" : "Missing Data" })
 });
 

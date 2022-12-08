@@ -18,7 +18,7 @@ const Landing = () => {
     const onRegister = (user) =>{
         console.log(user)
         
-        axios.post('http://localhost:3333/register', {
+        axios.post('https://adaptedserver.cyclic.app/register', {
           email: user.email,
           name: user.name,
           password: user.pwd,
@@ -36,7 +36,7 @@ const Landing = () => {
       const onLogin = (user) =>{
         console.log(user)
         
-        axios.post('http://localhost:3333/login',{
+        axios.post('https://adaptedserver.cyclic.app/login',{
           email: user.email,
           password: user.pwd,
         })

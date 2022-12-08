@@ -80,9 +80,10 @@ async function createUser(email, pw){
     return success
 }
 
-function handleUserLogin(data){
+async function handleUserLogin(data){
+
     if(data.email != (undefined || '') && data.password != (undefined || '')){
-        login(data.email, data.password)
+        await login(data.email, data.password)
         return true
         
     }
@@ -90,7 +91,7 @@ function handleUserLogin(data){
     
 }
   
- function login(email, pw){
+ async function login(email, pw){
     var success=false
     auth.signInWithEmailAndPassword(email, pw)
     .then((userCredential) => {

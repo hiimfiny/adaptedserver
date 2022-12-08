@@ -5,7 +5,7 @@ const EventData = ({gamePlayId, id, name, timestamp}) => {
     const [fields, setFields] = useState([])
     const [showFields, setShowFields] = useState(false)
     const getFields = async () => {
-        axios.get("https://shy-pear-gecko-vest.cyclic.app/fields", {params:{id: id}}).then((response)=>{  
+        axios.get("https://adaptedserver.cyclic.app/fields", {params:{id: id}}).then((response)=>{  
         setFields(response.data.sort((a,b) => a.id - b.id))
         })
     }

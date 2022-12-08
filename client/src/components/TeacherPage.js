@@ -7,7 +7,7 @@ const TeacherPage = () => {
     const [eventDataList, setEventDataList] = useState([])
     const [filterName, setFilterName] = useState('')
     const getList = () =>{
-        axios.get("https://shy-pear-gecko-vest.cyclic.app/").then((response)=>{
+        axios.get("https://adaptedserver.cyclic.app/").then((response)=>{
             setEventDataList(response.data)
         })
     }
@@ -22,7 +22,7 @@ const TeacherPage = () => {
     }
 
     const filterData = () => {
-        axios.get("http://localhost:3333/search", {params:{filterName: filterName}}).then((response)=>{
+        axios.get("https://adaptedserver.cyclic.app/search", {params:{filterName: filterName}}).then((response)=>{
             setEventDataList(response.data)
         })
     }
