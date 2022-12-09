@@ -6,8 +6,10 @@ const TeacherPage = () => {
 
     const [eventDataList, setEventDataList] = useState([])
     const [filterName, setFilterName] = useState('')
+    //var address = 'https://adaptedserver.cyclic.app'
+    var address = 'http://localhost:3333'
     const getList = () =>{
-        axios.get("https://adaptedserver.cyclic.app/").then((response)=>{
+        axios.get(address+"/").then((response)=>{
             setEventDataList(response.data)
         })
     }
@@ -22,7 +24,7 @@ const TeacherPage = () => {
     }
 
     const filterData = () => {
-        axios.get("https://adaptedserver.cyclic.app/search", {params:{filterName: filterName}}).then((response)=>{
+        axios.get(address+"/search", {params:{filterName: filterName}}).then((response)=>{
             setEventDataList(response.data)
         })
     }

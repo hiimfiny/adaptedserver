@@ -8,8 +8,9 @@ const Landing = () => {
     const [showRegister, setShowRegister] = useState(true)
     const [showLogin, setShowLogin] = useState(false)
 
-    let navigate = useNavigate();
-
+    var navigate = useNavigate();
+    var address = 'https://adaptedserver.cyclic.app'
+    //var address = 'http://localhost:3333'
     const onRegister = (user) =>{
         console.log(user)
         
@@ -31,7 +32,7 @@ const Landing = () => {
       const onLogin = (user) =>{
         
         //https://adaptedserver.cyclic.app
-        axios.post('http://localhost:3333/login',{
+        axios.post(address+'/login',{
           email: user.email,
           password: user.pwd,
         })

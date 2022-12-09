@@ -2,31 +2,31 @@ import firebaseApp from "./config.js";
 
 const auth = firebaseApp.auth()
 const db = firebaseApp.firestore()
-const PORT = process.env.PORT || 4444;
-const ADDRESS = process.env.ADDRESS || 'http://localhost' 
+var eventDataDB = await db.collection("eventDataTest").get();
+var eventFieldDataDB = await db.collection("eventFieldDataTest").get()
+async function handleData(data){
+    //console.log(data.gamePlaySession[0].eventDataModel[0])
+    
+    data.gamePlaySession.forEach(gamePlaySession => {
+        gamePlaySession.eventDataModel.forEach(eventDataModel=>{
+            handleEventData(eventDataModel)
+        })
+        
+    });
 
-
+}
 async function handleEventData(data){
-    var datatype = data.collection
-    if(datatype!=undefined)
-        switch(datatype){
-            case "eventData":
-                const eventData=formatEventData(data)
-                if(checkEventData(eventData)){
-                    await db.collection(datatype).add(eventData)
-                    return true
-                }
-            break
+    let fieldIdList = getFieldIds(data)
+    handleEventFieldData(data.fields)
+    let eventdata=formatEventData(data,fieldIdList)
+    db.collection("eventDataTest").add(eventdata)
 
-            case "eventFieldData":
-                const eventFieldData=formatEventFieldData(data)
-                if(checkEventFieldData(eventFieldData)){
-                    await db.collection(datatype).add(eventFieldData)
-                    return true
-                } 
-            break
-        }
-    return false
+}
+async function handleEventFieldData(data){
+    data.forEach(field => {
+        console.log(field)
+        db.collection("eventFieldDataTest").add(field)
+    });
 }
 
 function checkEventFieldData(eventFieldData){
@@ -37,15 +37,24 @@ function checkEventData(eventData){
     return (eventData.id!=undefined && eventData.name!=undefined && eventData.timestamp!=undefined && eventData.gamePlayId!=undefined)
 }
 
-function formatEventFieldData(data){
-    return {id: data.id, name: data.name, value: data.value, type: data.type, eventId: data.eventId}
+
+function formatEventData(data, fieldlist){
+    return {
+        id: data.id, 
+        name: data.name, 
+        timestamp: data.timestamp, 
+        gamePlayId: data.gamePlayId,
+        fields: fieldlist
+    }
 }
-function formatEventData(data){
-    var eventData = {id: data.id, name: data.name, timestamp: data.timestamp, gamePlayId: data.gamePlayId}
-    if(data.fields!=undefined)
-        eventData.fields = data.fields
-    return eventData
+function getFieldIds(data){
+    let eventIdList = []
+    data.fields.forEach(field => {
+        eventIdList.push(field.id)
+    });
+    return eventIdList
 }
+
 async function handleUserRegister(data){
     var notMissing = (data.email != undefined && data.name != undefined 
                     && data.teacher != undefined && data.password != undefined)
@@ -84,7 +93,7 @@ async function handleUserLogin(data){
 
     if(data.email != (undefined || '') && data.password != (undefined || '')){
         var s
-        setTimeout(async () => { s = await login(data.email, data.password)},3000)
+        s = await login(data.email, data.password)
         console.log("login " + s)
         return true
         
@@ -118,8 +127,8 @@ async function handleUserLogin(data){
     })
     
     
-    setTimeout(() => {console.log("end "+success);return success},2000)
-    
+    console.log("end "+success)
+    return success
 }
 
 async function filterUser(email){
@@ -130,12 +139,12 @@ async function filterUser(email){
 }
 
 async function returnFields(id){
-    const snapshot = await db.collection("eventFieldData").get()
-    const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) 
+    //const snapshot = await db.collection("eventFieldData").get()
+    const list = eventFieldDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() })) 
     const fieldlist = list.filter(field => field.eventId == id)
     return fieldlist
     
 }
 
 
-export {handleEventData, handleUserRegister, handleUserLogin, returnFields}
+export {handleData, handleEventData, handleUserRegister, handleUserLogin, returnFields}

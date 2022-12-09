@@ -4,8 +4,10 @@ import EventFieldData from './EventFieldData'
 const EventData = ({gamePlayId, id, name, timestamp}) => {
     const [fields, setFields] = useState([])
     const [showFields, setShowFields] = useState(false)
+    //var address = 'https://adaptedserver.cyclic.app'
+    var address = 'http://localhost:3333'
     const getFields = async () => {
-        axios.get("https://adaptedserver.cyclic.app/fields", {params:{id: id}}).then((response)=>{  
+        axios.get(address+"/fields", {params:{id: id}}).then((response)=>{  
         setFields(response.data.sort((a,b) => a.id - b.id))
         })
     }

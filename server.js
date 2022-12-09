@@ -7,6 +7,8 @@ import * as dbfun from "./database.js"
 const db = firebaseApp.firestore()
 const User = db.collection("Users")
 
+var eventDataDB = await db.collection("eventDataTest").get();
+var eventFieldDataDB = await db.collection("eventFieldDataTest").get()
 const PORT = process.env.PORT || 3333;
 const ADDRESS = process.env.ADDRESS || 'http://localhost' 
 const app = express();
@@ -22,8 +24,10 @@ app.listen(PORT,() => {
 })
 
 app.get("/", async (req, res) => {
-  const snapshot = await db.collection("eventData").get();
-  const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  eventDataDB= await db.collection("eventDataTest").get();
+  eventFieldDataDB = await db.collection("eventFieldDataTest").get()
+  const list = eventDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  list.sort((a,b) => a.id - b.id)
   res.send(list)
   
   
@@ -31,8 +35,7 @@ app.get("/", async (req, res) => {
 
 app.get("/search", async (req,res)=>{
   const name = req.query.filterName
-  const snapshot = await db.collection("eventData").get();
-  const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  const list = eventDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
   var filtered = []
   list.forEach(event => {
@@ -47,8 +50,8 @@ app.get("/search", async (req,res)=>{
 
 app.get("/fields", async (req, res)=>{
   const id = req.query.id
-  const snapshot = await db.collection("eventFieldData").get()
-    const list = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() })) 
+  //const snapshot = await db.collection("eventFieldDataTest").get()
+    const list = eventFieldDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() })) 
     const fieldlist = list.filter(field => field.eventId == id)
   res.send(fieldlist)
 })
@@ -64,6 +67,15 @@ app.post("/addeventdata", async (req, res) => {
   var success = await dbfun.handleEventData(data)
   console.log(success)
   res.send({ msg: (success) ? "Data added" : "Missing Data" })
+});
+app.post("/adddata", async (req, res) => {
+  const data = req.body
+  await dbfun.handleData(data)
+  //var success = await dbfun.handleEventData(data)
+  //console.log(success)
+  //res.send({ msg: (success) ? "Data added" : "Missing Data" })
+  refreshDB()
+  res.send("ok")
 });
 
 app.post("/update", async (req, res) => {
@@ -92,4 +104,9 @@ app.post("/login", async (req, res) => {
   var success = await dbfun.handleUserLogin(data)
   res.send({ msg: (success) ? "User logged in" : "Missing Data" })
 });
+
+const  refreshDB = async() =>{
+  eventDataDB= await db.collection("eventDataTest").get();
+  eventFieldDataDB = await db.collection("eventFieldDataTest").get()
+}
 
