@@ -9,7 +9,8 @@ async function handleData(data){
     
     data.gamePlaySession.forEach(gamePlaySession => {
         gamePlaySession.eventDataModel.forEach(eventDataModel=>{
-            handleEventData(eventDataModel)
+            db.collection("eventDataWhole").add(eventDataModel)
+            //handleEventData(eventDataModel)
         })
         
     });

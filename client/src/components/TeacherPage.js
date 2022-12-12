@@ -1,20 +1,26 @@
 import React, { useState,useEffect } from 'react'
 import axios from 'axios'
 import EventData from './EventData'
+import Search from './Search'
 
 const TeacherPage = () => {
 
     const [eventDataList, setEventDataList] = useState([])
-    const [filterName, setFilterName] = useState('')
+    const [eventDataFieldList, setEventDataFieldList] = useState([])
+    
     //var address = 'https://adaptedserver.cyclic.app'
     var address = 'http://localhost:3333'
     const getList = () =>{
         axios.get(address+"/").then((response)=>{
+            console.log(response.data)
             setEventDataList(response.data)
+            //setEventDataFieldList(response.data.field)
         })
     }
     useEffect(()=>{
+        console.log('i fire once');
         getList()
+        //filterFields(6966)
     }, [])
 
     const formatDate = (timestamp)=>{
@@ -23,17 +29,20 @@ const TeacherPage = () => {
 
     }
 
-    const filterData = () => {
-        axios.get(address+"/search", {params:{filterName: filterName}}).then((response)=>{
+    const filterData = (searchparams) => {
+        console.log(searchparams)
+        axios.get(address+"/search", {params:searchparams}).then((response)=>{
             setEventDataList(response.data)
         })
     }
+    const filterFields = (id) =>{ 
+        return eventDataFieldList
+        .filter(field => field.eventId == id)
+        .sort((a,b) => a.id - b.id)
+    }
   return (
     <div>
-        <h2>EventData</h2>
-            <label>Search:</label>
-            <input type='text' placeholder='' onChange={(e) => setFilterName(e.target.value)}/>
-            <button onClick={()=>{filterData()}}>Search</button>
+        <Search filter = {filterData}/>
         <table>
             <thead>
                 <th>gamePlayId</th>
@@ -48,7 +57,9 @@ const TeacherPage = () => {
                 gamePlayId={eventData.gamePlayId} 
                 id={eventData.id}
                 name={eventData.name}
-                timestamp={formatDate(eventData.timestamp)}/>
+                timestamp={formatDate(eventData.timestamp)}
+                //eventfields={filterFields(eventData.id)}
+                eventfields={eventData.fields}/>
             </tbody>
         ))}
         </table>

@@ -7,8 +7,12 @@ import * as dbfun from "./database.js"
 const db = firebaseApp.firestore()
 const User = db.collection("Users")
 
-var eventDataDB = await db.collection("eventDataTest").get();
-var eventFieldDataDB = await db.collection("eventFieldDataTest").get()
+var eventDataDB// = await db.collection("eventDataTest").get()
+var eventDataList//=eventDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+var eventFieldDataDB// = await db.collection("eventFieldDataTest").get()
+var eventFieldDataList// = eventFieldDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+var eventDB
+var eventList
 const PORT = process.env.PORT || 3333;
 const ADDRESS = process.env.ADDRESS || 'http://localhost' 
 const app = express();
@@ -21,26 +25,35 @@ app.listen(PORT,() => {
   console.log('Server Started')
   console.log(ADDRESS, PORT)
   
+  
 })
 
 app.get("/", async (req, res) => {
-  eventDataDB= await db.collection("eventDataTest").get();
-  eventFieldDataDB = await db.collection("eventFieldDataTest").get()
-  const list = eventDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-  list.sort((a,b) => a.id - b.id)
-  res.send(list)
-  
+  // eventDataDB = await db.collection("eventDataTest").get()
+  // eventDataList=eventDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  // eventFieldDataDB = await db.collection("eventFieldDataTest").get()
+  // eventFieldDataList = eventFieldDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  // eventDataList.sort((a,b) => a.id - b.id)
+  eventDB = await db.collection("eventDataWhole").get()
+  eventList=eventDB.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  eventList.sort((a,b) => a.id - b.id)
+  //console.log(eventDataDB.docs)
+  //res.send({data:eventDataList, field:eventFieldDataList})
+  res.send(eventList)
   
 });
 
 app.get("/search", async (req,res)=>{
+  const gamePlayId = req.query.filterGameplayId
+  const id = req.query.filterId
   const name = req.query.filterName
-  const list = eventDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+  
+  //const list = eventDB.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
 
   var filtered = []
-  list.forEach(event => {
-    console.log(event.name)
-    if(event.name.match(name)){
+  eventList.forEach(event => {
+    //console.log(event.name)
+    if(event.name.match(name) && event.gamePlayId.toString().match(gamePlayId) && event.id.toString().match(id)){
       filtered.push(event)
     }
   })
@@ -51,8 +64,8 @@ app.get("/search", async (req,res)=>{
 app.get("/fields", async (req, res)=>{
   const id = req.query.id
   //const snapshot = await db.collection("eventFieldDataTest").get()
-    const list = eventFieldDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() })) 
-    const fieldlist = list.filter(field => field.eventId == id)
+    //const list = eventFieldDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() })) 
+    const fieldlist = eventFieldDataList.filter(field => field.eventId == id)
   res.send(fieldlist)
 })
 
@@ -74,7 +87,7 @@ app.post("/adddata", async (req, res) => {
   //var success = await dbfun.handleEventData(data)
   //console.log(success)
   //res.send({ msg: (success) ? "Data added" : "Missing Data" })
-  refreshDB()
+  //refreshDB()
   res.send("ok")
 });
 
@@ -106,7 +119,8 @@ app.post("/login", async (req, res) => {
 });
 
 const  refreshDB = async() =>{
-  eventDataDB= await db.collection("eventDataTest").get();
+  eventDataDB = await db.collection("eventDataTest").get()
+  eventDataList=eventDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   eventFieldDataDB = await db.collection("eventFieldDataTest").get()
-}
+  eventFieldDataList = eventFieldDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() }));}
 

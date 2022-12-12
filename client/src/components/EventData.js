@@ -1,7 +1,7 @@
 import {useState, useEffect} from 'react'
 import axios from 'axios'
 import EventFieldData from './EventFieldData'
-const EventData = ({gamePlayId, id, name, timestamp}) => {
+const EventData = ({gamePlayId, id, name, timestamp, eventfields}) => {
     const [fields, setFields] = useState([])
     const [showFields, setShowFields] = useState(false)
     //var address = 'https://adaptedserver.cyclic.app'
@@ -13,7 +13,7 @@ const EventData = ({gamePlayId, id, name, timestamp}) => {
     }
 
     useEffect(()=>{
-        getFields()
+        setFields(eventfields)
     }, [])
     
     return (

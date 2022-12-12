@@ -9,8 +9,8 @@ const Landing = () => {
     const [showLogin, setShowLogin] = useState(false)
 
     var navigate = useNavigate();
-    var address = 'https://adaptedserver.cyclic.app'
-    //var address = 'http://localhost:3333'
+    //var address = 'https://adaptedserver.cyclic.app'
+    var address = 'http://localhost:3333'
     const onRegister = (user) =>{
         console.log(user)
         

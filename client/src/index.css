@@ -137,3 +137,15 @@ th {
   
   border: 1px solid black;
 }
+
+.searchdiv{
+
+}
+.searchdiv input{
+  width:min-content;
+  margin-right: 0px;
+}
+.searchdiv button{
+  margin-left: 30px;
+  width:100px
+}
