@@ -59,7 +59,7 @@ hr {
   margin: 8px 0;
   border: none;
   cursor: pointer;
-  width: 50%;
+  width: 30%;
   opacity: 0.9;
   
 }
@@ -72,6 +72,10 @@ hr {
 
 a {
   color: dodgerblue;
+}
+h2 {
+  text-align: center;
+  padding-left: 16px;
 }
 
 /* Set a grey background color and center the text of the "sign in" section */
@@ -116,14 +120,19 @@ th {
 
 .register{
   border: 1px solid black;
-  width: 50%;
+  width: 30%;
   display: block;
   margin-left: auto;
   margin-right: auto;
   margin-bottom: 15px;
   margin-top: 15px;
 }
-
+.registerfooter {
+  display:inline-block;
+  width: 100%;
+  margin-left: 50px;
+  margin-right: auto;
+}
 .switch{
   padding: 16px 10px;
   margin: 8px 0;
@@ -139,7 +148,7 @@ th {
 }
 
 .searchdiv{
-
+  border: 1px solid black;
 }
 .searchdiv input{
   width:min-content;

@@ -12,7 +12,9 @@ const Login = ({onLogin, switchPage}) => {
     }
 
     return (
-        <div className='reg'>
+        <div>
+            <h2>Adapted</h2>
+            <div className='reg'>
             <form className='register' onSubmit={onSubmit}>
             <div className='form-control'>
                 <label>E-mail</label>
@@ -24,11 +26,15 @@ const Login = ({onLogin, switchPage}) => {
                 <input type='password' placeholder='Enter password'
                 value={pwd} onChange={(e) => SetPassword(e.target.value)}/>
             </div>
-
+            <div className='registerfooter'>
             <input className='registerbtn' type='submit' value='Login' />
             <a className='switch' onClick={switchPage}>Click here to register</a>
+            </div>
+            
         </form>
         </div>
+        </div>
+        
         
     )
 }

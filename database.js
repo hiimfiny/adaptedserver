@@ -109,6 +109,7 @@ async function handleUserLogin(data){
     .then((userCredential) => {
       const user = userCredential.user
       console.log("logged in, ", user.email)
+      filterUser(user.email)
       //return success
       
     })

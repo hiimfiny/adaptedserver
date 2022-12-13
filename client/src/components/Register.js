@@ -17,7 +17,9 @@ const Register = ( {onRegister, switchPage} ) => {
     }
 
     return (
-        <form className='register' onSubmit={onSubmit}>
+        <div>
+            <h2>Adapted</h2>
+            <form className='register' onSubmit={onSubmit}>
             <div className='form-control'>
                 <label>E-mail</label>
                 <input type='text' placeholder='Enter e-mail' 
@@ -38,10 +40,14 @@ const Register = ( {onRegister, switchPage} ) => {
                 <input type='checkbox' checked={teacher}
                 value={teacher} onChange={(e)=> SetTeacher(e.currentTarget.checked)}/>
             </div>
-
-            <input className='registerbtn' type='submit' value='Register' />
-            <a className='switch' onClick={switchPage}>Click here to log in</a>
+            <div className='registerfooter'>
+                <input className='registerbtn' type='submit' value='Register' />
+                <a className='switch' onClick={switchPage}>Click here to log in</a>
+            </div>
+            
         </form>
+        </div>
+        
     )
 }
 

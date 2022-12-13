@@ -10,26 +10,39 @@ const Search = ({filter}) => {
             filterName: name,
             filterId: id,
             filterGameplayId: gameplayId,
+        }
+        filter(params)
+    }
+    function clearData(){
+        setName('')
+        setId('')
+        setGameplayId('')
+        document.getElementById('gameplay').value=''
+        document.getElementById('id').value=''
+        document.getElementById('name').value=''
+        const params={
+            filterName: '',
+            filterId: '',
+            filterGameplayId: '',
             
         }
-        console.log(params)
         filter(params)
     }
   return (
     <div>
-        <h2>Search:</h2>
         <div className="searchdiv">
-        <label for="name">GameplayId</label>
-        <input type='text' id="name" placeholder='' onChange={(e) => setGameplayId(e.target.value)}/>
-        <label for="name">Id</label>
-        <input type='text' style={{width: '100px'}} id="name" placeholder='' onChange={(e) => setId(e.target.value)}/>
-        <label for="name">Name</label>
-        <input type='text' id="name" placeholder='' onChange={(e) => setName(e.target.value)}/>
-        <button className='registerbtn' onClick={()=>{filterData()}}>Search</button>
+            <label for="gameplay">GameplayId</label>
+            <input type='text' id="gameplay" placeholder='' onChange={(e) => setGameplayId(e.target.value)}/>
+            
+            <label for="id">Id</label>
+            <input type='text' style={{width: '100px'}} id="id" placeholder='' onChange={(e) => setId(e.target.value)}/>
+            
+            <label for="name">Name</label>
+            <input type='text' id="name" placeholder='' onChange={(e) => setName(e.target.value)}/>
+            
+            <button className='registerbtn' onClick={()=>{filterData()}}>Search</button>
+            <button className='registerbtn' onClick={()=>{clearData();}}>Clear</button>
         </div>
-        
-       
-        
     </div>
   )
 }

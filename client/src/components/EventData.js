@@ -4,13 +4,6 @@ import EventFieldData from './EventFieldData'
 const EventData = ({gamePlayId, id, name, timestamp, eventfields}) => {
     const [fields, setFields] = useState([])
     const [showFields, setShowFields] = useState(false)
-    //var address = 'https://adaptedserver.cyclic.app'
-    var address = 'http://localhost:3333'
-    const getFields = async () => {
-        axios.get(address+"/fields", {params:{id: id}}).then((response)=>{  
-        setFields(response.data.sort((a,b) => a.id - b.id))
-        })
-    }
 
     useEffect(()=>{
         setFields(eventfields)
@@ -18,10 +11,10 @@ const EventData = ({gamePlayId, id, name, timestamp, eventfields}) => {
     
     return (
     <tr>
-        <td className=''>{gamePlayId}</td>
-        <td className=''>{id}</td>
-        <td className=''>{name}</td>
-        <td className=''>{timestamp}</td>
+        <td className='gameplay'>{gamePlayId}</td>
+        <td className='id'>{id}</td>
+        <td className='name'>{name}</td>
+        <td className='time'>{timestamp}</td>
         <td className=''>
             <button onClick={()=>setShowFields(!showFields)}>fields</button>
             {showFields && <div>

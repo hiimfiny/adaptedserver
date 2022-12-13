@@ -3,32 +3,29 @@ import cors from "cors";
 import firebaseApp from "./config.js";
 import * as dbfun from "./database.js"
 
-
 const db = firebaseApp.firestore()
 const User = db.collection("Users")
 
-var eventDataDB// = await db.collection("eventDataTest").get()
-var eventDataList//=eventDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-var eventFieldDataDB// = await db.collection("eventFieldDataTest").get()
-var eventFieldDataList// = eventFieldDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+var eventDataDB
+var eventDataList
+var eventFieldDataDB
+var eventFieldDataList
 var eventDB
 var eventList
+
 const PORT = process.env.PORT || 3333;
 const ADDRESS = process.env.ADDRESS || 'http://localhost' 
 const app = express();
 app.use(express.json());
 app.use(cors());
-//app.use(express.static(__dirname))
-
 
 app.listen(PORT,() => {
   console.log('Server Started')
   console.log(ADDRESS, PORT)
-  
-  
 })
 
-app.get("/", async (req, res) => {
+app.get("/getdata", async (req, res) => {
+  console.log("a")
   // eventDataDB = await db.collection("eventDataTest").get()
   // eventDataList=eventDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
   // eventFieldDataDB = await db.collection("eventFieldDataTest").get()
@@ -48,23 +45,17 @@ app.get("/search", async (req,res)=>{
   const id = req.query.filterId
   const name = req.query.filterName
   
-  //const list = eventDB.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-
   var filtered = []
   eventList.forEach(event => {
-    //console.log(event.name)
     if(event.name.match(name) && event.gamePlayId.toString().match(gamePlayId) && event.id.toString().match(id)){
       filtered.push(event)
     }
   })
-  console.log(filtered)
   res.send(filtered)
 })
 
 app.get("/fields", async (req, res)=>{
   const id = req.query.id
-  //const snapshot = await db.collection("eventFieldDataTest").get()
-    //const list = eventFieldDataDB.docs.map((doc) => ({ id: doc.id, ...doc.data() })) 
     const fieldlist = eventFieldDataList.filter(field => field.eventId == id)
   res.send(fieldlist)
 })
@@ -84,27 +75,8 @@ app.post("/addeventdata", async (req, res) => {
 app.post("/adddata", async (req, res) => {
   const data = req.body
   await dbfun.handleData(data)
-  //var success = await dbfun.handleEventData(data)
-  //console.log(success)
-  //res.send({ msg: (success) ? "Data added" : "Missing Data" })
-  //refreshDB()
-  res.send("ok")
+  res.send("Data added")
 });
-
-app.post("/update", async (req, res) => {
-  const id = req.body.id;
-  delete req.body.id;
-  const data = req.body;
-  await User.doc(id).update(data);
-  res.send({ msg: "Updated" });
-});
-
-app.post("/delete", async (req, res) => {
-  const id = req.body.id;
-  await User.doc(id).delete();
-  res.send({ msg: "Deleted" });
-});
-
 
 app.post("/register", async (req, res) => {
   const data = req.body

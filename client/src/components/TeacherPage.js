@@ -8,10 +8,10 @@ const TeacherPage = () => {
     const [eventDataList, setEventDataList] = useState([])
     const [eventDataFieldList, setEventDataFieldList] = useState([])
     
-    //var address = 'https://adaptedserver.cyclic.app'
-    var address = 'http://localhost:3333'
+    var address = 'https://adaptedserver.cyclic.app'
+    //var address = 'http://localhost:3333'
     const getList = () =>{
-        axios.get(address+"/").then((response)=>{
+        axios.get(address+"/getdata").then((response)=>{
             console.log(response.data)
             setEventDataList(response.data)
             //setEventDataFieldList(response.data.field)
@@ -20,7 +20,6 @@ const TeacherPage = () => {
     useEffect(()=>{
         console.log('i fire once');
         getList()
-        //filterFields(6966)
     }, [])
 
     const formatDate = (timestamp)=>{
@@ -35,14 +34,11 @@ const TeacherPage = () => {
             setEventDataList(response.data)
         })
     }
-    const filterFields = (id) =>{ 
-        return eventDataFieldList
-        .filter(field => field.eventId == id)
-        .sort((a,b) => a.id - b.id)
-    }
+    
   return (
     <div>
         <Search filter = {filterData}/>
+        <h2 style={{'text-align': 'left'}}>Events</h2>
         <table>
             <thead>
                 <th>gamePlayId</th>
@@ -51,6 +47,7 @@ const TeacherPage = () => {
                 <th>timestamp</th>
                 <th>fields</th>
             </thead>
+            
         {eventDataList.map(eventData=>(
             <tbody key={eventData.id}>
                 <EventData 
